@@ -1,13 +1,8 @@
-// app/api/detalleordenvta/[nroordenvta]/[codmedicamento]/route.ts
-
 import { prisma } from '@/lib/prisma'
 import { NextResponse } from 'next/server'
 
 // Obtener un detalle por clave compuesta
-export async function GET(
-  _req: Request,
-  { params }: { params: { nroordenvta: string; codmedicamento: string } }
-) {
+export async function GET({ params }: { params: { nroordenvta: string; codmedicamento: string } }) {
   const detalle = await prisma.detalleOrdenVta.findUnique({
     where: {
       NroOrdenVta_CodMedicamento: {
@@ -25,11 +20,8 @@ export async function GET(
 }
 
 // Actualizar un detalle
-export async function PUT(
-  req: Request,
-  { params }: { params: { nroordenvta: string; codmedicamento: string } }
-) {
-  const data = await req.json()
+export async function PUT({ params, request }: { params: { nroordenvta: string; codmedicamento: string }, request: Request }) {
+  const data = await request.json()
 
   const actualizado = await prisma.detalleOrdenVta.update({
     where: {
@@ -45,10 +37,7 @@ export async function PUT(
 }
 
 // Eliminar un detalle
-export async function DELETE(
-  _req: Request,
-  { params }: { params: { nroordenvta: string; codmedicamento: string } }
-) {
+export async function DELETE({ params }: { params: { nroordenvta: string; codmedicamento: string } }) {
   const eliminado = await prisma.detalleOrdenVta.delete({
     where: {
       NroOrdenVta_CodMedicamento: {
