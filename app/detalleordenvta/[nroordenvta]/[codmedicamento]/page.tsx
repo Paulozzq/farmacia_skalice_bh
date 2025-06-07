@@ -1,28 +1,24 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { prisma }  from '@/lib/prisma'
+import { prisma } from '@/lib/prisma';
 
-export async function GET(
-  req: NextRequest,
-  context: { params: { nroordenvta: string; codmedicamento: string } }
-) {
-  const { nroordenvta, codmedicamento } = context.params
+export async function GET({ params }: { params: { nroordenvta: string; codmedicamento: string } }) {
+  const { nroordenvta, codmedicamento } = params;
 
-  try {
-    const detalle = await prisma.detalleOrdenVta.findUnique({
-      where: {
-        NroOrdenVta_CodMedicamento: {
-          NroOrdenVta: Number(nroordenvta),
-          CodMedicamento: Number(codmedicamento),
-        },
-      },
-    })
+  // Recuerda convertir los strings a números si tu BD usa Int
+  const nroOrden = parseInt(nroordenvta, 10);
+  const codMed = parseInt(codmedicamento, 10);
 
-    if (!detalle) {
-      return NextResponse.json({ error: 'Detalle no encontrado' }, { status: 404 })
+  const detalle = await prisma.detalleOrdenVta.findUnique({
+    where: {
+      NroOrdenVta_CodMedicamento: {
+        NroOrdenVta: nroOrden,
+        CodMedicamento: codMed,
+      }
     }
+  });
 
-    return NextResponse.json(detalle)
-  } catch (error) {
-    return NextResponse.json({ error: 'Error del servidor' }, { status: 500 })
+  if (!detalle) {
+    return new Response(JSON.stringify({ error: 'Detalle no encontrado' }), { status: 404 });
   }
+
+  return new Response(JSON.stringify(detalle), { status: 200 });
 }
