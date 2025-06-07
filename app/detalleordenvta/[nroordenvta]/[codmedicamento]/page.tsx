@@ -1,16 +1,11 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 
-interface Params {
-  nroordenvta: string
-  codmedicamento: string
-}
-
 export async function GET(
-  _request: Request,
-  { params }: { params: Params }
+  req: NextRequest,
+  context: { params: { nroordenvta: string; codmedicamento: string } }
 ) {
-  const { nroordenvta, codmedicamento } = params
+  const { nroordenvta, codmedicamento } = context.params
 
   try {
     const detalle = await prisma.detalleOrdenVta.findUnique({
