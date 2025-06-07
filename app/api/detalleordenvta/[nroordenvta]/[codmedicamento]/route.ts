@@ -1,13 +1,17 @@
 import { prisma } from '@/lib/prisma'
 import { NextResponse } from 'next/server'
 
-// Obtener un detalle por clave compuesta
-export async function GET({ params }: { params: { nroordenvta: string; codmedicamento: string } }) {
+export async function GET(
+  request: Request,
+  { params }: { params: { nroordenvta: string; codmedicamento: string } }
+) {
+  const { nroordenvta, codmedicamento } = params
+
   const detalle = await prisma.detalleOrdenVta.findUnique({
     where: {
       NroOrdenVta_CodMedicamento: {
-        NroOrdenVta: Number(params.nroordenvta),
-        CodMedicamento: Number(params.codmedicamento)
+        NroOrdenVta: Number(nroordenvta),
+        CodMedicamento: Number(codmedicamento)
       }
     }
   })
@@ -19,15 +23,18 @@ export async function GET({ params }: { params: { nroordenvta: string; codmedica
   return NextResponse.json(detalle)
 }
 
-// Actualizar un detalle
-export async function PUT({ params, request }: { params: { nroordenvta: string; codmedicamento: string }, request: Request }) {
+export async function PUT(
+  request: Request,
+  { params }: { params: { nroordenvta: string; codmedicamento: string } }
+) {
+  const { nroordenvta, codmedicamento } = params
   const data = await request.json()
 
   const actualizado = await prisma.detalleOrdenVta.update({
     where: {
       NroOrdenVta_CodMedicamento: {
-        NroOrdenVta: Number(params.nroordenvta),
-        CodMedicamento: Number(params.codmedicamento)
+        NroOrdenVta: Number(nroordenvta),
+        CodMedicamento: Number(codmedicamento)
       }
     },
     data
@@ -36,13 +43,17 @@ export async function PUT({ params, request }: { params: { nroordenvta: string; 
   return NextResponse.json(actualizado)
 }
 
-// Eliminar un detalle
-export async function DELETE({ params }: { params: { nroordenvta: string; codmedicamento: string } }) {
+export async function DELETE(
+  request: Request,
+  { params }: { params: { nroordenvta: string; codmedicamento: string } }
+) {
+  const { nroordenvta, codmedicamento } = params
+
   const eliminado = await prisma.detalleOrdenVta.delete({
     where: {
       NroOrdenVta_CodMedicamento: {
-        NroOrdenVta: Number(params.nroordenvta),
-        CodMedicamento: Number(params.codmedicamento)
+        NroOrdenVta: Number(nroordenvta),
+        CodMedicamento: Number(codmedicamento)
       }
     }
   })
